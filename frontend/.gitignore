@@ -5,6 +5,8 @@ build/
 dist/
 wheels/
 *.egg-info
+../backend/__pycache__
+../backend/notehive.db
 
 # Virtual environments
 .venv
