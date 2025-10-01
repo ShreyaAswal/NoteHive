@@ -5,8 +5,14 @@ build/
 dist/
 wheels/
 *.egg-info
-../backend/__pycache__
-../backend/notehive.db
+
+#Database files
+backend/notehive.db
+backend/notehive.db-journal
 
 # Virtual environments
 .venv
+
+#Operating system files
+.DS_Store
+Thumbs.db
