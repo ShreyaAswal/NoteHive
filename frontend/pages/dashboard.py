@@ -1,6 +1,9 @@
 import streamlit as st
 import os
 import time
+import sys
+import json
+
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
@@ -16,6 +19,13 @@ if not st.session_state.get('logged_in', False):
     st.error("You are not logged in. Please log in to access the dashboard.")
     time.sleep(1.5)
     st.switch_page("pages/login.py")
+
+#extracting function from ai_processor.py
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+backend_path = os.path.join(project_root, 'backend')
+sys.path.append(backend_path)
+
+from ai_processor import extract_text_from_pdf , summarize
 
 
 # --- STYLING ---
@@ -148,19 +158,31 @@ with st.container():
     with col2:
         store_button = st.button("Store & Summarize", type="primary")
 
+   # This logic block runs if either button is clicked and a file is uploaded
     if generate_button and uploaded_file is not None:
-        # --- Placeholder for Backend Logic ---
-        with st.spinner('Generating summary...'):
-            # In the future, you would call your PDF processing and summarization function here.
-            st.success("Summary Generated Successfully!")
-            st.text_area("Generated Summary", "This is a placeholder summary of the uploaded PDF content. " * 10, height=150)
+        with st.spinner('Extracting text from PDF...'):
+            # 1. Call the backend function to get the text
+            pdf_text = extract_text_from_pdf(uploaded_file)
             
-    if store_button and uploaded_file is not None:
-        # --- Placeholder for Backend Logic ---
-        st.info("Please select a subject folder below to store the PDF.")
-        # Example: st.session_state.pdf_to_store = uploaded_file
+            # 2. Call the Gemini API via our backend function
+            # It securely accesses the API key from the .streamlit/secrets.toml file
+            api_key = st.secrets["GOOGLE_API_KEY"]
+            summary, error = summarize(pdf_text, api_key)
+
+            if error:
+                st.error(error)
+            else:
+                st.success("Summary Generated Successfully!")
+                st.text_area("Generated Summary", summary, height=200)
+
+                if store_button:
+                    # --- Placeholder for the final backend step ---
+                    # In the future, you would add database logic here to save the
+                    # PDF file and summary for the logged-in user.
+                    st.info("PDF and summary are ready to be stored.")
 
     st.markdown('</div>', unsafe_allow_html=True)
+
 
 # --- BOTTOM SECTION: SUBJECT FOLDERS ---
 st.header("Your Stored Notes")

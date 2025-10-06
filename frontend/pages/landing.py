@@ -119,4 +119,4 @@ with st.expander("Is my data secure?"):
 
 # --- FOOTER ---
 st.divider()
-st.markdown("<p style='text-align: center;'>© 2025 NoteHIVE. Built with ❤️ using Streamlit.</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>© 2025 NoteHIVE.</p>", unsafe_allow_html=True)
