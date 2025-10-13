@@ -42,19 +42,35 @@ def summarize(text, api_key):
 
         # 3. Construct the prompt for the summarization task.
         prompt = f"""
-        Please provide a concise and well-structured summary of the following text.
-        Focus on the main ideas and key points.
+         Analyze the following text and perform two tasks:
+        1.  Provide a concise summary of the content (approximately 150 words).
+        2.  Identify the primary academic subject of the text like physics , chemistry, mathematics,computer science etc.
 
         TEXT:
         "{text}"
+        Please format your entire response as a single, valid JSON object with two keys: "subject" and "summary".
+        Example:
+        {{
+            "subject": "History",
+            "summary": "The document details the key events of the ancient Roman Empire..."
+        }}
+
         """
 
         # 4. Call the generate_content method directly from the model object.
         response = model.generate_content(prompt)
 
-        # 5. Return the generated text and a None value for the error.
-        return response.text, None
+        #    Clean up and parse the JSON response from the model.
+        #    The model sometimes wraps the JSON in markdown, which we remove.
+        cleaned_response = response.text.strip().lstrip("```json").rstrip("```")
+        response_data = json.loads(cleaned_response)
 
+        # 5. Return the generated text and a None value for the error.
+        return response_data, None
+
+    except json.JSONDecodeError:
+        # This error occurs if the model's output isn't valid JSON.
+        return None, "Failed to parse the AI model's structured response. Please try again."
     except Exception as e:
-        # Catch any potential errors during the API call.
+        # Catch any other potential API errors.
         return None, f"An error occurred while contacting the AI service: {e}"

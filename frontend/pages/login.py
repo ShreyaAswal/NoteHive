@@ -15,7 +15,6 @@ from signupDb import verify_user
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
     page_title="NoteHIVE | Login",
-    page_icon="🐝",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -97,7 +96,7 @@ st.markdown("""
 left_col, right_col = st.columns([1, 1.2], gap="large")
 
 with left_col:
-    st.markdown("<h1 style='font-size: 3.5rem; font-weight: 600;'>Welcome Back! 👋</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='font-size: 3.5rem; font-weight: 600;'>Welcome Back! </h1>", unsafe_allow_html=True)
     st.markdown("### Log in to access your dashboard, manage your notes, and continue your journey with NoteHIVE.")
     st.markdown("Ready to get back to productivity?")
 
@@ -107,10 +106,10 @@ with right_col:
         st.subheader("Login to Your Account")
 
         # Input fields
-        st.markdown("**✉️ Email or Username**")
+        st.markdown("** Email or Username**")
         username_or_email = st.text_input("Email", placeholder="your.email@example.com", label_visibility="collapsed")
         
-        st.markdown("**🔑 Password**")
+        st.markdown("** Password**")
         password = st.text_input("Password", type="password", placeholder="Enter your password", label_visibility="collapsed")
         
         # # 'Forgot Password?' and 'Remember Me' in one row

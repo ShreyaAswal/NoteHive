@@ -27,6 +27,13 @@ st.markdown("""
                     color: black;
                     border: none;
                 }
+                .col1-content {
+                    padding: 0rem !important;
+                    border: 0rem !important;
+                }
+                .right-col-content {
+                    padding-top: 4rem !important;
+                }
         </style>
         """, unsafe_allow_html=True)
 
@@ -34,8 +41,10 @@ st.markdown("""
 col1, col2 = st.columns([2, 1])
 
 with col1:
-    st.header("NoteHIVE 🐝")
+  
+    st.header("NoteHIVE")
     st.markdown("Your AI-Powered Study Notes Organizer")
+    
 
 with col2:
     button_col1, button_col2 = st.columns(2)
@@ -48,27 +57,38 @@ with col2:
 
 # --- HERO SECTION ---
 # Adjusted column ratio to [3, 2] to give more space to the text and reduce the gap.
-left_col, right_col = st.columns([3, 1.7])
+left_col, right_col = st.columns([3, 1.5])
 with left_col:
-    st.header("Transform Your Study Notes with AI")
+    st.markdown('<div class="col1-content">', unsafe_allow_html=True)
+    st.header("Upload, Summarize, Organize. It's that simple.")
+    st.markdown('</div>', unsafe_allow_html=True)
     st.write(
         """
-        Tired of messy notes and endless reading? **NoteHIVE** is your personal AI assistant
-        that turns cluttered study materials into clear, organized, and summarized notes.
-        Upload your PDFs and let our AI do the heavy lifting.
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum
+
+        Turn your study materials into manageable insights.
+        NoteHIVE is designed for students and researchers who need to get to the core of their reading material, fast. 
+        Upload your lecture notes, academic papers, or textbooks, 
+        and let our AI provide you with a clear summary and identify the subject, 
+        so you can organize your knowledge and study more effectively.
+
+        NoteHIVE streamlines how you interact with your documents. 
+        Our platform allows you to upload any PDF and instantly receive a clear, AI-generated summary. 
+        The document is automatically categorized by subject, helping you build an organized, 
+        searchable library of your most important information.
+        Find clarity and save time with every upload.
         """
     )
     if st.button("Get Started for Free", type="primary", use_container_width=True):
         st.switch_page("pages/signup.py")
 
-
 with right_col:
     # A more relevant image for a study/tech app
+    st.markdown('<div class="right-col-content">', unsafe_allow_html=True)
     st.image(
-        "https://images.pexels.com/photos/346529/pexels-photo-346529.jpeg",
-        caption="Collaborate, Learn, and Succeed",
+        "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070",
+        caption="Organize, Summarize, Succeed",
     )
+    st.markdown('</div>', unsafe_allow_html=True)
 
 st.divider()
 

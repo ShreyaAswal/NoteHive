@@ -8,7 +8,6 @@ import json
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
     page_title="NoteHIVE | Dashboard",
-    page_icon="🐝",
     layout="wide"
 )
 
@@ -167,20 +166,26 @@ with st.container():
             # 2. Call the Gemini API via our backend function
             # It securely accesses the API key from the .streamlit/secrets.toml file
             api_key = st.secrets["GOOGLE_API_KEY"]
-            summary, error = summarize(pdf_text, api_key)
+         # The function now returns a dictionary of data instead of just text
+            response_data, error = summarize(pdf_text, api_key)
 
             if error:
                 st.error(error)
             else:
-                st.success("Summary Generated Successfully!")
+                # 3. Extract the subject and summary from the response dictionary
+                #    We use .get() to safely access the keys, providing a default value if one is missing.
+                subject = response_data.get("subject", "Unknown")
+                summary = response_data.get("summary", "No summary could be generated.")
+
+                st.success("Analysis Complete!")
+                
+                # 4. Display both pieces of information to the user
+                st.subheader(f"Identified Subject: {subject}")
                 st.text_area("Generated Summary", summary, height=200)
 
                 if store_button:
-                    # --- Placeholder for the final backend step ---
-                    # In the future, you would add database logic here to save the
-                    # PDF file and summary for the logged-in user.
-                    st.info("PDF and summary are ready to be stored.")
-
+                    # This placeholder logic now has access to the identified subject
+                    st.info(f"PDF and summary are ready to be stored under the '{subject}' folder.")
     st.markdown('</div>', unsafe_allow_html=True)
 
 

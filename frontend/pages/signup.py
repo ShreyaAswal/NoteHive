@@ -16,7 +16,6 @@ from signupDb import add_user
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
     page_title="NoteHIVE | Signup",
-    page_icon="🐝",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -126,16 +125,16 @@ with right_col:
         st.subheader("Create a New Account")
 
         # Input fields with custom labels and icons
-        st.markdown("**✉️ Email**")
+        st.markdown("**Email**")
         email = st.text_input("Email", placeholder="your.email@example.com", label_visibility="collapsed")
         
-        st.markdown("**👤 Username**")
+        st.markdown("**Username**")
         username = st.text_input("Username", placeholder="Choose a unique username", label_visibility="collapsed")
         
-        st.markdown("**🔑 Password**")
+        st.markdown("** Password**")
         password = st.text_input("Password", type="password", placeholder="Create a strong password", label_visibility="collapsed")
         
-        st.markdown("**🔑 Confirm Password**")
+        st.markdown("** Confirm Password**")
         confirm_password = st.text_input("Confirm Password", type="password", placeholder="Re-enter your password", label_visibility="collapsed")
 
         # Submit button
@@ -147,13 +146,13 @@ with right_col:
                 st.error("⚠️ Please fill out all fields.")
                 is_valid = False
             elif not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-                st.error("📧 Please enter a valid email address.")
+                st.error(" Please enter a valid email address.")
                 is_valid = False
             elif password != confirm_password:
-                st.error("🔑 Passwords do not match.")
+                st.error(" Passwords do not match.")
                 is_valid = False
             elif len(password) < 8:
-                st.error("🔒 Password must be at least 8 characters long.")
+                st.error(" Password must be at least 8 characters long.")
                 is_valid = False
 
             if is_valid:
@@ -161,9 +160,8 @@ with right_col:
             
                 if success:
                     st.success(f"✅ {message} You can now log in.")
-                    st.balloons()
                 else:
-                    st.error(f"❌ {message}")
+                    st.error(f" {message}")
 
 
     # Link to login page
