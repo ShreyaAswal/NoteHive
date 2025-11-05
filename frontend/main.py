@@ -5,7 +5,6 @@ import streamlit as st
 # This should always be the first Streamlit command in your main script.
 st.set_page_config(
     page_title="NoteHIVE",
-    page_icon="🐝",
     layout="wide"
 )
 

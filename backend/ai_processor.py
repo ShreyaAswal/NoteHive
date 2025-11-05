@@ -38,20 +38,20 @@ def summarize(text, api_key):
         genai.configure(api_key=api_key)
 
         # 2. Initialize the model using genai.GenerativeModel().
-        model = genai.GenerativeModel('gemini-2.5-flash') # Using the newer, faster model
+        model = genai.GenerativeModel('gemini-2.5-flash') 
 
         # 3. Construct the prompt for the summarization task.
         prompt = f"""
          Analyze the following text and perform two tasks:
-        1.  Provide a concise summary of the content (approximately 150 words).
-        2.  Identify the primary academic subject of the text like physics , chemistry, mathematics,computer science etc.
+        1.  Provide a summary of the content.
+        2.  give a title of the content.
 
         TEXT:
         "{text}"
-        Please format your entire response as a single, valid JSON object with two keys: "subject" and "summary".
+        Please format your entire response as a single, valid JSON object with two keys: "title" and "summary".
         Example:
         {{
-            "subject": "History",
+            "title": "title of the document",
             "summary": "The document details the key events of the ancient Roman Empire..."
         }}
 

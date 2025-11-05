@@ -3,6 +3,7 @@ import os
 import time
 import sys
 import json
+import base64
 
 
 # --- PAGE CONFIGURATION ---
@@ -25,6 +26,7 @@ backend_path = os.path.join(project_root, 'backend')
 sys.path.append(backend_path)
 
 from ai_processor import extract_text_from_pdf , summarize
+from pdf_utils import create_summary_pdf,get_pdf_display
 
 
 # --- STYLING ---
@@ -142,6 +144,15 @@ with logout_col:
         st.switch_page("pages/landing.py")
     st.markdown('</div>', unsafe_allow_html=True)
 
+# --- Initialize session state variables ---
+# We use these to remember the app's state across reruns.
+if 'summary_data' not in st.session_state:
+    st.session_state.summary_data = None
+if 'show_store_form' not in st.session_state:
+    st.session_state.show_store_form = False
+if 'pdf_bytes_to_store' not in st.session_state:
+    st.session_state.pdf_bytes_to_store = None
+
 
 # --- TOP SECTION: PDF UPLOADER AND ACTIONS ---
 with st.container():
@@ -152,10 +163,7 @@ with st.container():
     # Use columns to place buttons next to each other, with empty space to the right
     col1, col2, col3 = st.columns([1.2, 1.5, 4])
     with col1:
-        generate_button = st.button("Generate Summary", type="secondary")
-    
-    with col2:
-        store_button = st.button("Store & Summarize", type="primary")
+        generate_button = st.button("Generate Summary", type="primary")
 
    # This logic block runs if either button is clicked and a file is uploaded
     if generate_button and uploaded_file is not None:
@@ -171,23 +179,75 @@ with st.container():
 
             if error:
                 st.error(error)
+                st.session_state.summary_data = None
             else:
-                # 3. Extract the subject and summary from the response dictionary
-                #    We use .get() to safely access the keys, providing a default value if one is missing.
-                subject = response_data.get("subject", "Unknown")
-                summary = response_data.get("summary", "No summary could be generated.")
+                st.session_state.summary_data = response_data
+                #reset other data
+                st.session_state.show_store_form = False 
+                st.session_state.pdf_bytes_to_store = None
 
-                st.success("Analysis Complete!")
-                
-                # 4. Display both pieces of information to the user
-                st.subheader(f"Identified Subject: {subject}")
-                st.text_area("Generated Summary", summary, height=200)
 
-                if store_button:
-                    # This placeholder logic now has access to the identified subject
-                    st.info(f"PDF and summary are ready to be stored under the '{subject}' folder.")
+    # --- DISPLAY SUMMARY & "STORE" BUTTON ---
+    # This block runs AFTER a summary has been generated and saved to the session state.
+    if st.session_state.summary_data is not None:
+        data = st.session_state.summary_data
+        title = data.get("title", "No title generated.")
+        summary = data.get("summary", "No summary generated.")
+
+        st.success("Analysis Complete!")
+        st.subheader(f"Identified Title: {title}")
+        st.text_area("Generated Summary", summary, height=200)
+
+        # Create the "Store" button, which will set another state variable
+        if st.button("Store", type="secondary"):
+            with st.spinner("Creating PDF document..."):
+
+            # 1. Generate the PDF bytes
+                pdf_bytes = create_summary_pdf(title, summary)
+                # 2. Store the bytes in session state
+                st.session_state.pdf_bytes_to_store = pdf_bytes
+                # 3. Set the flag to show the form
+                st.session_state.show_store_form = True
+                st.rerun()
+
+    
+    # --- DISPLAY "STORE" FORM ---
+    # This block runs AFTER the "Store" button has been clicked.
+    if st.session_state.show_store_form:
+        st.subheader("Store this summary")
+
+
+        # --- DISPLAY THE PDF PREVIEW ---
+        st.write("Preview of the summary PDF to be stored:")
+        pdf_bytes = st.session_state.pdf_bytes_to_store
+        if pdf_bytes:
+            base64_pdf = get_pdf_display(pdf_bytes)
+            pdf_display=f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="500" type="application/pdf"></iframe>'
+            st.markdown(pdf_display, unsafe_allow_html=True)
+
+
+
+
+        # Placeholder list of subjects (in a real app, you'd fetch this from the DB)
+        subjects_placeholder = ["Physics", "History", "Computer Science", "Biology", "Literature", "create new subject"]
+
+        with st.form("store_form"):
+            selected_subject = st.selectbox(
+                "Choose a folder to store this note:",
+                options=subjects_placeholder
+            )
+
+            submit_store_button = st.form_submit_button("Submit")
+
+            if submit_store_button:
+                    st.success(f"summary stored successfully in :{selected_subject}")                
+                    st.session_state.summary_data = None
+                    st.session_state.show_store_form = False
+                    time.sleep(2) # Show the success message for 2 seconds
+                    st.rerun() # Rerun to hide the form and summary
+
     st.markdown('</div>', unsafe_allow_html=True)
-
+                
 
 # --- BOTTOM SECTION: SUBJECT FOLDERS ---
 st.header("Your Stored Notes")
