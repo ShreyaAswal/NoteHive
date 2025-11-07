@@ -3,10 +3,7 @@ import streamlit as st
 # --- PAGE CONFIGURATION ---
 # Sets the browser tab title, icon, and layout for the entire app.
 # This should always be the first Streamlit command in your main script.
-st.set_page_config(
-    page_title="NoteHIVE",
-    layout="wide"
-)
+st.set_page_config(page_title="NoteHive | AI Study Notes Organizer", page_icon="🪶", layout="wide")
 
 
 # --- DEFAULT PAGE REDIRECTION ---
